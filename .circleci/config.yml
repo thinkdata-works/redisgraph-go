@@ -5,14 +5,15 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/golang:1.9
+      - image: circleci/golang:1.12
       
-      - image: redislabs/redisgraph:edge
+      - image: redislabs/redisgraph:1.99.2
         port: 6379:6379
 
     working_directory: /go/src/github.com/RedisGraph/redisgraph-go
     steps:
       - checkout
+      - run: 'export REDISGRAPH_URL="0.0.0.0:6379"'
       - run: go get -v -t -d ./...
       - run: go test -v ./... -race -coverprofile=coverage.txt -covermode=atomic
       - run: bash <(curl -s https://codecov.io/bash) -t ${CODECOV_TOKEN}
